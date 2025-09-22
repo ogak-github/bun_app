@@ -17,10 +17,9 @@ export const authorizationPlugin = new Elysia()
         );
 
         const unauthorizedResult = ResponseModel.createResponse({
-          message: "Invalid token",
           error: {
             code: "401",
-            details: "Unauthorized",
+            message: "Unauthorized",
           },
         });
 

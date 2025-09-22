@@ -38,12 +38,12 @@ export namespace ResponseModel {
   export function createResponse<T>(params: {
     data?: T;
     message?: string;
-    error?: { code: string; details?: string };
+    error?: { code: string; message?: string };
     meta?: ResponseModel.ApiResponse["meta"];
   }): ResponseModel.ApiResponse {
     return {
       success: !params.error,
-      message: params.message ?? (params.error ? "Error" : "Success"),
+      message: params.message,
       data: params.data,
       error: params.error,
       meta: params.meta,

@@ -17,15 +17,12 @@ export const authController = new Elysia({ prefix: "/auth" })
         return ResponseModel.createResponse({
           message: "Login Success",
           data: response.data,
-          meta: {
-            response_time: Date.now() - startTime,
-          },
         });
       } else {
         return ResponseModel.createResponse({
           error: {
             code: "AUTH_FAILED",
-            details: response.error,
+            message: response.error,
           },
         });
       }
