@@ -22,7 +22,7 @@ export abstract class AuthService {
       } else {
         return {
           success: false,
-          error: "Invalid username or password",
+          error: "Invalid credentials",
         };
       }
     } catch (error) {

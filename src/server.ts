@@ -10,32 +10,38 @@ const app = new Elysia()
   // Global error formatter: onError receives { code, error }
   .onError(({ code, error }: any) => {
     const isValidation = code === "VALIDATION";
-    const isUnauthorized = code === "Unauthorized";
+    //const isUnauthorized = code === "Unauthorized";
     const statusCode = error?.status ?? (isValidation ? 400 : 500);
-    return ResponseModel.createResponse({
-      error: {
-        code: statusCode,
-        details: error?.customError,
-      },
-    });
+    if (isValidation) {
+      return ResponseModel.createResponse({
+        error: {
+          code: statusCode,
+          details: error?.customError,
+        },
+      });
+    }
+    /*
 
-    return ResponseModel.createResponse({
-      message: "Unauthorized Access",
-      error: {
-        code: statusCode,
-        details: error?.status,
-      },
-    });
+    if (isUnauthorized) {
+      return ResponseModel.createResponse({
+        message: "Unauthorized Access",
+        error: {
+          code: statusCode,
+          details: error?.status,
+        },
+      });
+    }
+   */
   })
 
   // health
-  .get("/", ({ set }) => {
-    return { set: set.status };
+  .get("/", () => {
+    return { message: "Server is running" };
   })
   .get(
     "/secure",
-    ({ set, headers }) => {
-      return { set: set.status };
+    () => {
+      return { message: "Access Allowed" };
     },
     {
       isAuth: true,

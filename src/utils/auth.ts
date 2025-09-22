@@ -1,6 +1,4 @@
-import { resolve } from "bun";
 import Elysia from "elysia";
-import { AuthService } from "../modules/auth/auth.service";
 import { ResponseModel } from "../common/response.model";
 import jwt from "@elysiajs/jwt";
 
@@ -18,38 +16,33 @@ export const authorizationPlugin = new Elysia()
           (k) => k.toLowerCase() === "authorization",
         );
 
+        const unauthorizedResult = ResponseModel.createResponse({
+          message: "Invalid token",
+          error: {
+            code: "401",
+            details: "Unauthorized",
+          },
+        });
+
         const authorization = authHeader ? headers[authHeader] : undefined;
         if (!authorization) {
-          throw {
-            status: 401,
-            customError: "Unauthorized",
-          };
+          throw unauthorizedResult;
         }
 
         const [bearer, token] = authorization.split(" ");
         if (bearer !== "Bearer" || !token) {
-          throw {
-            status: 401,
-            customError: "Invalid Token",
-          };
+          throw unauthorizedResult;
         }
 
+        /// This should be JWT verify
         if (token !== "GENERATED_TOKEN") {
-          throw {
-            status: 401,
-            customError: "Invalid Token",
-          };
+          throw unauthorizedResult;
         }
 
         return true;
       },
     }),
   });
-
-type User = {
-  id: string;
-  role: string;
-};
 
 // export const auth = new Elysia({ name: "auth" })
 //   // step 1: derive user dari header
