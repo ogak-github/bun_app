@@ -6,26 +6,19 @@ import { ResponseModel } from "./common/response.model";
 import { authorizationPlugin } from "./utils/auth";
 
 const app = new Elysia()
-  // global plugin: JWT (so handlers can use `jwt.sign` / `jwt.payload`)
-  .use(
-    jwt({
-      secret: process.env.JWT_SECRET ?? "dev-secret", // put in env in real apps
-    }),
-  )
   .use(authorizationPlugin)
   // Global error formatter: onError receives { code, error }
   .onError(({ code, error }: any) => {
     const isValidation = code === "VALIDATION";
+    const isUnauthorized = code === "Unauthorized";
     const statusCode = error?.status ?? (isValidation ? 400 : 500);
     return ResponseModel.createResponse({
-      message: "Validation error",
       error: {
         code: statusCode,
         details: error?.customError,
       },
     });
 
-    const isUnauthorized = code === "UNAUTHORIZED" || code === "401";
     return ResponseModel.createResponse({
       message: "Unauthorized Access",
       error: {
