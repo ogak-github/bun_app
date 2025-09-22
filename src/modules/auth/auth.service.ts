@@ -37,7 +37,6 @@ export abstract class AuthService {
     if (token == "GENERATED_TOKEN") {
       return true;
     }
-
     return false;
   }
 }
