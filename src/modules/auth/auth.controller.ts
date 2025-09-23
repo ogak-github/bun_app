@@ -32,7 +32,6 @@ export const authController = new Elysia({ prefix: "/auth" })
       response: ResponseModel.apiResponse,
     },
   )
-  .use(authorizationPlugin)
   .get(
     "/profile",
     ({ body }) => {

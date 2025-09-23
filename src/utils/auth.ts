@@ -2,7 +2,7 @@ import Elysia from "elysia";
 import { ResponseModel } from "../common/response.model";
 import jwt from "@elysiajs/jwt";
 
-export const authorizationPlugin = new Elysia()
+export const authorizationPlugin = new Elysia({ name: "authorization" })
   .use(
     jwt({
       name: "jwt",
