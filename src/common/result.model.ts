@@ -1,4 +1,5 @@
 // This is common result for success or error from Services
+// If success true show data, if success false show error instead.
 
 import { t } from "elysia";
 
