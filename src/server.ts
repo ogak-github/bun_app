@@ -3,8 +3,12 @@ import { Elysia } from "elysia";
 import { authController } from "./modules/auth/auth.controller";
 import { ResponseModel } from "./common/response.model";
 import { authorizationPlugin } from "./utils/auth";
+import serverTiming from "@elysiajs/server-timing";
 
 const app = new Elysia()
+  // for auditing performance bottlenecks using Server Timing API
+  .use(serverTiming())
+  // authorization macro => add isAuth: true, for secured path
   .use(authorizationPlugin)
   // Global error formatter: onError receives { code, error }
   .onError(({ code, error }: any) => {
