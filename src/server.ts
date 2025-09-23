@@ -1,6 +1,5 @@
 // src/server.ts
-import { Elysia, status } from "elysia";
-import { jwt } from "@elysiajs/jwt";
+import { Elysia } from "elysia";
 import { authController } from "./modules/auth/auth.controller";
 import { ResponseModel } from "./common/response.model";
 import { authorizationPlugin } from "./utils/auth";
