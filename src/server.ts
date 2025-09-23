@@ -7,7 +7,7 @@ import { ResponseModel } from "./common/response.model";
 import { authorizationPlugin } from "./utils/auth";
 import serverTiming from "@elysiajs/server-timing";
 
-const app = new Elysia()
+export const app = new Elysia()
   // for auditing performance bottlenecks using Server Timing API
   .use(serverTiming())
   // authorization macro => add isAuth: true, for secured path
@@ -41,5 +41,4 @@ const app = new Elysia()
   )
 
   // mount modules (1 Elysia instance per module / controller)
-  .use(authController)
-  .listen(3000);
+  .use(authController);
