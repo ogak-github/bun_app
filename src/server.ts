@@ -1,3 +1,5 @@
+// NOTE: You can add logger like pino, since this app will run with multiple thread
+
 // src/server.ts
 import { Elysia } from "elysia";
 import { authController } from "./modules/auth/auth.controller";
@@ -41,5 +43,3 @@ const app = new Elysia()
   // mount modules (1 Elysia instance per module / controller)
   .use(authController)
   .listen(3000);
-
-console.log("🚀 Server: http://localhost:3000");
