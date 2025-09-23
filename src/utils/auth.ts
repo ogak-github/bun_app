@@ -1,11 +1,42 @@
 import Elysia from "elysia";
 import { ResponseModel } from "../common/response.model";
-import jwt from "@elysiajs/jwt";
+import jwt, { type JWTPayloadInput, type JWTPayloadSpec } from "@elysiajs/jwt";
 import { jwtConfig } from "../lib/jwt_config";
+
+export abstract class JWTFactory {
+  constructor(
+    private jwt: {
+      sign: (payload: Record<string, any>) => Promise<string>;
+      verify: (token: string) => Promise<any>;
+    },
+  ) {}
+
+  async sign(payload: Record<string, any>) {
+    try {
+      return await this.jwt.sign(payload);
+    } catch (e) {
+      console.error("JWT sign error:", e);
+    }
+  }
+
+  async verify(token: string) {
+    try {
+      return await this.jwt.verify(token);
+    } catch (e) {
+      console.error("JWT verify error:", e);
+      throw new Error("Invalid token");
+    }
+  }
+}
 
 export const authorizationPlugin = new Elysia({ name: "authorization" })
   .use(jwtConfig)
   .macro({
+    isAdming:(enabled: true) => ({
+      resolve: async ({headers, jwt}) => {
+        
+      }
+    }),
     isAuth: (enabled: true) => ({
       resolve: async ({ set, headers, jwt }) => {
         const authHeader = Object.keys(headers).find(
