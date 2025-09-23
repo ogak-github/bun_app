@@ -20,7 +20,7 @@ export namespace ResponseModel {
     error: t.Optional(
       t.Object({
         code: t.String(),
-        details: t.Optional(t.String()),
+        message: t.Optional(t.String()),
       }),
     ),
     meta: t.Optional(
