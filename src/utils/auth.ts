@@ -1,17 +1,13 @@
 import Elysia from "elysia";
 import { ResponseModel } from "../common/response.model";
 import jwt from "@elysiajs/jwt";
+import { jwtConfig } from "../lib/jwt_config";
 
 export const authorizationPlugin = new Elysia({ name: "authorization" })
-  .use(
-    jwt({
-      name: "jwt",
-      secret: process.env.JWT_SECRET ?? "dev-secret", // put in env in real apps
-    }),
-  )
+  .use(jwtConfig)
   .macro({
     isAuth: (enabled: true) => ({
-      resolve: ({ set, headers, jwt }) => {
+      resolve: async ({ set, headers, jwt }) => {
         const authHeader = Object.keys(headers).find(
           (k) => k.toLowerCase() === "authorization",
         );
@@ -25,16 +21,19 @@ export const authorizationPlugin = new Elysia({ name: "authorization" })
 
         const authorization = authHeader ? headers[authHeader] : undefined;
         if (!authorization) {
+          set.status = 401;
           throw unauthorizedResult;
         }
 
         const [bearer, token] = authorization.split(" ");
         if (bearer !== "Bearer" || !token) {
+          set.status = 401;
           throw unauthorizedResult;
         }
 
-        /// This should be JWT verify
-        if (token !== "GENERATED_TOKEN") {
+        const profile = await jwt.verify(token);
+        if (!profile) {
+          set.status = 401;
           throw unauthorizedResult;
         }
 

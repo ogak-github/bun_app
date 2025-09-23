@@ -1,22 +1,24 @@
-import jwt from "@elysiajs/jwt";
 import { ResultModel } from "../../common/result.model";
 import type { AuthModel } from "./auth.model";
 
 export abstract class AuthService {
-  static async login({
-    username,
-    password,
-  }: AuthModel.LoginBody): Promise<ResultModel.Result> {
+  static async login(
+    { username, password }: AuthModel.LoginBody,
+    sign: (payload: Record<string, string | number>) => Promise<string>,
+  ): Promise<ResultModel.Result> {
     try {
       if (username === "bulys" && password === "secrets") {
+        const user = {
+          username: "bulys",
+          full_name: "Bun Elysia",
+        };
+        const token = await sign(user);
+
         return {
           success: true,
           data: {
-            user: {
-              username: "bulys",
-              full_name: "Bun Elysia",
-            },
-            token: "GENERATED_TOKEN",
+            user,
+            token,
           },
         };
       } else {
@@ -31,12 +33,5 @@ export abstract class AuthService {
         error: error,
       };
     }
-  }
-
-  static async verifyAuth({ token }: { token: string }): Promise<Boolean> {
-    if (token == "GENERATED_TOKEN") {
-      return true;
-    }
-    return false;
   }
 }

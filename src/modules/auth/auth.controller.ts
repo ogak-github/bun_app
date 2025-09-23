@@ -3,15 +3,18 @@ import { AuthService } from "./auth.service";
 import { AuthModel } from "./auth.model";
 import { ResponseModel } from "../../common/response.model";
 import { authorizationPlugin } from "../../utils/auth";
+import jwt from "@elysiajs/jwt";
+import { jwtConfig } from "../../lib/jwt_config";
 
 export const authController = new Elysia({ prefix: "/auth" })
   .use(authorizationPlugin)
+  .use(jwtConfig)
   .post(
     "/login",
-    async ({ body }) => {
+    async ({ body, jwt }) => {
       const startTime = Date.now();
 
-      const response = await AuthService.login(body);
+      const response = await AuthService.login(body, jwt.sign);
 
       if (response.success === true) {
         return ResponseModel.createResponse({
