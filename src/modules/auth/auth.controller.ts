@@ -8,6 +8,11 @@ import { jwtConfig } from "../../lib/jwt_config";
 
 export const authController = new Elysia({ prefix: "/auth" })
   .use(authorizationPlugin)
+  /* Protect all Paths use guard
+  .guard({
+    isAuth: true,
+  })
+  */
   .use(jwtConfig)
   .post(
     "/login",
