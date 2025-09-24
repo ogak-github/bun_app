@@ -4,6 +4,7 @@
     "": {
       "name": "bun_app",
       "dependencies": {
+        "@elysiajs/bearer": "^1.4.1",
         "@elysiajs/jwt": "^1.4.0",
         "@elysiajs/server-timing": "^1.4.0",
         "elysia": "^1.4.6",
@@ -18,6 +19,8 @@
   },
   "packages": {
     "@borewit/text-codec": ["@borewit/text-codec@0.1.1", "", {}, "sha512-5L/uBxmjaCIX5h8Z+uu+kA9BQLkc/Wl06UGR5ajNRxu+/XjonB5i8JpgFMrPj3LXTCPA0pv8yxUvbUi+QthGGA=="],
+
+    "@elysiajs/bearer": ["@elysiajs/bearer@1.4.1", "", { "peerDependencies": { "elysia": ">= 1.4.0" } }, "sha512-vLLSMEVsLKp/8p/eoAbXZdXKRs1jEQO4OkrfcKM2x8FkiK2aKNcFgLID45bH+6rYbCf8Ihg0NKw59zxMLl43OQ=="],
 
     "@elysiajs/jwt": ["@elysiajs/jwt@1.4.0", "", { "dependencies": { "jose": "^6.0.11" }, "peerDependencies": { "elysia": ">= 1.4.0" } }, "sha512-Z0PvZhQxdDeKZ8HslXzDoXXD83NKExNPmoiAPki3nI2Xvh5wtUrBH+zWOD17yP14IbRo8fxGj3L25MRCAPsgPA=="],
 

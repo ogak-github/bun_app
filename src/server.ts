@@ -11,7 +11,7 @@ export const app = new Elysia()
   // for auditing performance bottlenecks using Server Timing API
   .use(serverTiming())
   // authorization macro => add isAuth: true, for secured path
-  .use(authorizationPlugin)
+
   // Global error formatter: onError receives { code, error }
   .onError(({ code, error }: any) => {
     const isValidation = code === "VALIDATION";
@@ -25,7 +25,7 @@ export const app = new Elysia()
       });
     }
   })
-
+  .use(authorizationPlugin)
   // health
   .get("/", () => {
     return { message: "Server is running" };

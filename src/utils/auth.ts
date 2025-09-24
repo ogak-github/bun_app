@@ -2,6 +2,7 @@ import Elysia from "elysia";
 import { ResponseModel } from "../common/response.model";
 import jwt, { type JWTPayloadInput, type JWTPayloadSpec } from "@elysiajs/jwt";
 import { jwtConfig } from "../lib/jwt_config";
+import bearer from "@elysiajs/bearer";
 
 export abstract class JWTFactory {
   constructor(
@@ -31,18 +32,14 @@ export abstract class JWTFactory {
 
 export const authorizationPlugin = new Elysia({ name: "authorization" })
   .use(jwtConfig)
+  .use(bearer())
   .macro({
-    isAdming:(enabled: true) => ({
-      resolve: async ({headers, jwt}) => {
-        
-      }
-    }),
-    isAuth: (enabled: true) => ({
-      resolve: async ({ set, headers, jwt }) => {
-        const authHeader = Object.keys(headers).find(
-          (k) => k.toLowerCase() === "authorization",
-        );
-
+    isAuth: (enabled: Boolean) => ({
+      resolve: async ({ set, jwt, bearer }) => {
+        if (!enabled) {
+          console.log("auth disabled");
+          return;
+        }
         const unauthorizedResult = ResponseModel.createResponse({
           error: {
             code: "401",
@@ -50,66 +47,43 @@ export const authorizationPlugin = new Elysia({ name: "authorization" })
           },
         });
 
-        const authorization = authHeader ? headers[authHeader] : undefined;
-        if (!authorization) {
+        if (!bearer) {
           set.status = 401;
           throw unauthorizedResult;
         }
 
-        const [bearer, token] = authorization.split(" ");
-        if (bearer !== "Bearer" || !token) {
-          set.status = 401;
-          throw unauthorizedResult;
-        }
+        const profile = await jwt.verify(bearer);
 
-        const profile = await jwt.verify(token);
         if (!profile) {
           set.status = 401;
           throw unauthorizedResult;
         }
 
-        return true;
+        return;
+
+        // const authHeader = Object.keys(headers).find(
+        //   (k) => k.toLowerCase() === "authorization",
+        // );
+
+        // const authorization = authHeader ? headers[authHeader] : undefined;
+        // if (!authorization) {
+        //   set.status = 401;
+        //   throw unauthorizedResult;
+        // }
+
+        // const [bearer, token] = authorization.split(" ");
+        // if (bearer !== "Bearer" || !token) {
+        //   set.status = 401;
+        //   throw unauthorizedResult;
+        // }
+
+        // const profile = await jwt.verify(token);
+        // if (!profile) {
+        //   set.status = 401;
+        //   throw unauthorizedResult;
+        // }
+
+        // return true;
       },
     }),
   });
-
-// export const auth = new Elysia({ name: "auth" })
-//   // step 1: derive user dari header
-//   .derive(({ headers, jwt }) => {
-//     const token = headers.authorization?.replace("Bearer ", "");
-//     if (!token) return { user: null };
-
-//     try {
-//       const decoded = jwtVerify(
-//         token,
-//         process.env.JWT_SECRET || "secret",
-//       ) as User;
-//       return { user: decoded };
-//     } catch {
-//       return { user: null };
-//     }
-//   })
-//   // step 2: macro guard
-//   .macro({
-//     isAuth: (enabled: boolean = true) => ({
-//       resolve: ({ user, set }) => {
-//         if (enabled && !user) {
-//           set.status = 401;
-//           throw { message: "Unauthorized" };
-//         }
-//       },
-//     }),
-//     role: (expected: string) => ({
-//       resolve: ({ user, set }) => {
-//         if (!user) {
-//           set.status = 401;
-//           throw { message: "Unauthorized" };
-
-//         }
-//         if (user.role !== expected) {
-//           set.status = 403;
-//           throw { message: "Forbidden" };
-//         }
-//       },
-//     }),
-//   });
