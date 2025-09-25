@@ -21,6 +21,20 @@ export abstract class AuthService {
             token,
           },
         };
+      } else if (username === "notelys" && password === "secrets") {
+        const user = {
+          username: "notelys",
+          full_name: "Not Bun Elysia",
+        };
+        const token = await sign(user);
+
+        return {
+          success: true,
+          data: {
+            user,
+            token,
+          },
+        };
       } else {
         return {
           success: false,

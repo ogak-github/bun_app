@@ -4,7 +4,7 @@
 import { Elysia } from "elysia";
 import { authController } from "./modules/auth/auth.controller";
 import { ResponseModel } from "./common/response.model";
-import { authorizationPlugin } from "./utils/auth";
+import { authorizationPlugin, permissionPlugin } from "./utils/auth";
 import serverTiming from "@elysiajs/server-timing";
 
 export const app = new Elysia()
@@ -31,12 +31,23 @@ export const app = new Elysia()
     return { message: "Server is running" };
   })
   .get(
+    "/staff",
+    () => {
+      return { message: "Hello, Staff" };
+    },
+    {
+      isAuth: true,
+    },
+  )
+  .use(permissionPlugin)
+  .get(
     "/secure",
     () => {
       return { message: "Access Allowed" };
     },
     {
       isAuth: true,
+      isAdmin: true,
     },
   )
 
