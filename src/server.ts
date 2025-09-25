@@ -4,7 +4,7 @@
 import { Elysia } from "elysia";
 import { authController } from "./modules/auth/auth.controller";
 import { ResponseModel } from "./common/response.model";
-import { authorizationPlugin, permissionPlugin } from "./utils/auth";
+import { authorizationPlugin } from "./utils/auth";
 import serverTiming from "@elysiajs/server-timing";
 
 export const app = new Elysia()
@@ -26,24 +26,22 @@ export const app = new Elysia()
     }
   })
   .use(authorizationPlugin)
-  // health
   .get("/", () => {
-    return { message: "Server is running" };
+    return { message: "Public area" };
   })
   .get(
-    "/staff",
+    "/any",
     () => {
-      return { message: "Hello, Staff" };
+      return { message: "Any user with authorized" };
     },
     {
       isAuth: true,
     },
   )
-  .use(permissionPlugin)
   .get(
     "/secure",
     () => {
-      return { message: "Access Allowed" };
+      return { message: "Specific User Allowed" };
     },
     {
       isAuth: true,
